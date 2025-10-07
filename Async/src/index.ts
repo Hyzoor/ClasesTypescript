@@ -2,9 +2,9 @@ import axios from "axios";
 
 const getMultipleCharactersName = async (ids: number[]) => {
 
-   
+
     const charactersPromises = ids.map(async (x) => {
-        
+
         return (await axios.get("https://rickandmortyapi.com/api/character/" + x)).data;
 
     });
@@ -20,6 +20,6 @@ const getMultipleCharactersName = async (ids: number[]) => {
 
 }
 
-console.log(await getMultipleCharactersName([1,2,3]));
+console.log(await getMultipleCharactersName([1, 2, 3]));
 
 // Promise.allSettled ver
