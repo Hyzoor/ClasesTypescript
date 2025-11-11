@@ -10,10 +10,22 @@ const coleccion = () => getDb().collection("ArquitecturaProgramacionInternet");
 
 router.get('/', async (req, res) => {
 
+    const page = Number(req.query?.page) || 1;
+    const limit = Number(req.query?.limit) || 2;
+    const skip = (page - 1) * limit;
+
     try {
 
-        const personas = await coleccion().find().toArray();
-        res.json(personas);
+        const personas = await coleccion().find().skip(skip).limit(limit).toArray();
+        res.json({
+            info: {
+                page: page,
+                numberOfPeopleInPage: limit
+            },
+
+            result: personas
+        }
+        );
 
     } catch (error) {
         res.status(404).json(error);
@@ -92,5 +104,27 @@ router.delete("/:id", async (req, res) => {
     }
 })
 
+router.post("/multiple", async (req, res) => {
+
+    try {
+
+        // Comprobacion del body
+        const newName = req.body?.name;
+        const newLastName = req.body?.lastName;
+
+        if (newName && newLastName && typeof newName === "string" && typeof newLastName === "string") {
+            const result = await coleccion().insertOne(req.body);
+            const idMongo = result.insertedId;
+            const personaCreada = await coleccion().findOne({ _id: idMongo })    // No entiendo muy bien esto
+            res.status(201).json(personaCreada);
+        } else {
+            res.status(400).json({ message: "Invalid input body" })
+        }
+
+
+    } catch (err) {
+        res.status(400).json(err);  // Ver codigos de error
+    }
+})
 
 export default router;
