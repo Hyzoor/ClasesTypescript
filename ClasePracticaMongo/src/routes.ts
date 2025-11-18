@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
 
     } catch (error: any) {
         res
-            .status(404)
+            .status(500)
             .json({ message: "No se ha podido obtener los discos", detail: error.message })
     }
 })
