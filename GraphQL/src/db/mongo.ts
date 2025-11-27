@@ -9,7 +9,9 @@ dotenv.config();
 
 export const connectToMongoDB = async (): Promise<void> => {
     try {
-        const mongoURL = `mongodb+srv://${process.env.USER_MONGO}:${process.env.USER_PASSWORD}@${process.env.MONGO_CLUSTER}.bqrxevu.mongodb.net/?appName=${process.env.MONGO_APP_NAME}`
+        const mongoURL = process.env.MONGO_URL;
+        if (!mongoURL) return console.log("No existe url para el monguete");
+
         client = new MongoClient(mongoURL);
         dB = client.db(dbName);
         console.log("Conectado al monguito")

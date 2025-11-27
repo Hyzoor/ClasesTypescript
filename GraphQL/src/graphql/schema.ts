@@ -11,9 +11,14 @@ export const typeDefs = gql`
 
     }
 
+    type User {
+        _id: ID!,
+        email: String!
+    }
+
 
     type Query {
-
+        me: User,
         getVideogames: [Videogame]!,
         getVideogame(_id:ID!): Videogame
 
@@ -21,6 +26,8 @@ export const typeDefs = gql`
 
     type Mutation {
 
-        addVideogame(name: String!, platform: String!, date: String!): Videogame!
+        addVideogame(name: String!, platform: String!, date: String!): Videogame!,
+        register(email: String!, password: String!) : String!,
+        login(email: String!, password: String!) : String!
     }
 `;
