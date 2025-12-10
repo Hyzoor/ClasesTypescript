@@ -3,17 +3,16 @@ import { gql } from "apollo-server";
 export const typeDefs = gql`
 
     type Videogame {
-
         _id: ID!,
         name: String,
         platform: String,
         date: String
-
     }
 
     type User {
         _id: ID!,
-        email: String!
+        email: String!,
+        videoGameLibrary: [Videogame]!
     }
 
 
@@ -28,6 +27,7 @@ export const typeDefs = gql`
 
         addVideogame(name: String!, platform: String!, date: String!): Videogame!,
         register(email: String!, password: String!) : String!,
-        login(email: String!, password: String!) : String!
+        login(email: String!, password: String!) : String!,
+        addVideoGameToMyLibrary(videoGameID: ID!): User!    
     }
 `;

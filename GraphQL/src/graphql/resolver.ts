@@ -3,8 +3,10 @@ import { getDB } from "../db/mongo";
 import { ObjectId } from "mongodb";
 import { createUser, validateUser } from "../collections/usersVideogames";
 import { signToken } from "../auth";
+import { UserVideogame } from "../types/user";
 
 const coleccion = () => getDB().collection("Videogames");
+const coleccionUsers = () => getDB().collection("UsersVideogames");
 
 
 export const resolvers: IResolvers = {
@@ -16,7 +18,7 @@ export const resolvers: IResolvers = {
             if (!user) return null
             return {
                 _id: user._id.toString(),
-                email: user.emaila
+                email: user.email
             }
         },
 
@@ -28,6 +30,19 @@ export const resolvers: IResolvers = {
             return await coleccion().findOne({ _id: new ObjectId(id) });
         }
     },
+
+
+    User: {
+        videoGameLibrary: async (parent: UserVideogame) => {
+
+            const listaIDVideoGame = parent.videoGameLibrary;
+            const objectIds = listaIDVideoGame.map((x) => new ObjectId(x));
+            return await coleccion().find({ _id: { $in: objectIds } }).toArray();
+
+        }
+    },
+
+
 
     Mutation: {
 
@@ -48,6 +63,24 @@ export const resolvers: IResolvers = {
             if (!user) throw new Error("Invalid credentials");
 
             return signToken(user._id.toString());
+        },
+
+        addVideoGameToMyLibrary: async (_, { videoGameId }: { videoGameId: string }, { user }) => {
+
+
+            if (!user) throw new Error("No eres nadie pinkfloyd");
+
+            const userId = new ObjectId(user._id);
+            const videoGame = await coleccion().findOne({ _id: new ObjectId(videoGameId) })
+
+            await coleccion().updateOne({ _id: userId }, {
+                $addToSet: { videoGameLibrary: videoGameId },
+            })
+
+            const updatedUser = await coleccionUsers().findOne({ _id: userId });
+            return updatedUser;
+
+
         }
 
 
