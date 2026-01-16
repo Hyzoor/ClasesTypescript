@@ -1,0 +1,7 @@
+PORT=9999
+USER_MONGO=mondongon
+USER_PASSWORD=mandanga
+MONGO_CLUSTER=cluster
+MONGO_APP_NAME=posElNombre
+SECRET=ersekretosecretiko
+MONGO_URL=tuURLprimo
